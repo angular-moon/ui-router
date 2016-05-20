@@ -1,5 +1,5 @@
 {
-    "version": "0.2.13",
+    "version": "0.2.18",
     "description": "angular前端路由",
     "name": "ui-router",
     "main": "ui-router.js",
