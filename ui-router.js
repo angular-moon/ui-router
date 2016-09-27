@@ -3907,7 +3907,7 @@ function $ViewDirective(   $state,   $injector,   $uiViewScroll,   $interpolate)
     }
 
     // ng 1.2+
-    if ($animate) {
+    /*if ($animate) {
       return {
         enter: function(element, target, cb) {
           if (!animEnabled(element)) {
@@ -3928,7 +3928,29 @@ function $ViewDirective(   $state,   $injector,   $uiViewScroll,   $interpolate)
           }
         }
       };
-    }
+    }*/
+
+    //修复$animate版本判断的调用bug, angular 1.3.0-beta.8版本的 angular-animate又没有用promise了, 没搞懂为什么
+    if ($animate) {
+      return {
+        enter: function(element, target, cb) {
+          if (!animEnabled(element)) {
+            statics.enter(element, target, cb);
+          } else {
+            var promise = $animate.enter(element, null, target, cb);
+            if (promise && promise.then) promise.then(cb);
+          }
+        },
+        leave: function(element, cb) {
+          if (!animEnabled(element)) {
+            statics.leave(element, cb);
+          } else {
+            var promise = $animate.leave(element, cb);
+            if (promise && promise.then) promise.then(cb);
+          }
+        }
+    };
+  }
 
     // ng 1.1.5
     if ($animator) {
